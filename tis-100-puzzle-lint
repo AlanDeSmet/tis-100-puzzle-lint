@@ -201,6 +201,10 @@ function dump_puzzle(name, description, streams, layout)
 		io.write("\n")
 	end
 
+	-- TODO: Only really works with one image.
+	-- Which is sort of fine, you only get one. But
+	-- need to do something if there are more than one.
+	local img_idx = 1
 	for i=1,39 do
 		if type(streams) == "table" then
 			io.write(string.format("%2d. ",i))
@@ -208,9 +212,26 @@ function dump_puzzle(name, description, streams, layout)
 				if type(v) == "table" then
 					local fmt = "%6s "
 					if v[1] == STREAM_OUTPUT then fmt = "%8s " end
-					if v[1] == STREAM_IMAGE then fmt = "%30s " end
-					local data = v[4]
-					io.write(string.format(fmt, streamstring(data[i])))
+					if v[1] == STREAM_IMAGE then
+						if i > 18 then
+							io.write("                              ");
+						else
+							for dmy=1,30 do
+								if v[4][img_idx] == 0 then io.write(" ") 
+								elseif v[4][img_idx] == 1 then io.write("░") 
+								elseif v[4][img_idx] == 2 then io.write("▒") 
+								elseif v[4][img_idx] == 3 then io.write("█") 
+								elseif v[4][img_idx] == 4 then io.write("╬") 
+								else io.write("?") end
+								img_idx = img_idx + 1
+							end
+						end
+						io.write(" ")
+
+					else
+						local data = v[4]
+						io.write(string.format(fmt, streamstring(data[i])))
+					end
 				end
 			end
 		end
