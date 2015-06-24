@@ -567,26 +567,47 @@ end
 --------------------------------------------------------------------------------
 function main(arg)
 
-	if #arg ~= 1 or arg[1] == "-h" or arg[1] == "--help" or arg[1] == "-help" then
+	local file
+
+	local idx = 1
+	while idx <= #arg do
+		thisarg = arg[idx]
+		idx = idx + 1
+
+		if thisarg == "-h" or thisarg == "--help" or thisarg == "-help" then
+			print("Usage: specify a single argument, the TIS-100 puzzle Lua file to be analyzed.")
+			return 1
+		end
+
+
+		if file ~= nil then
+			print("Unexpected argument "..thisarg..". Only one Lua puzzle file should be specified.")
+			return 1
+		end
+		file = thisarg
+	end
+
+	if file == nil then
 		print("Usage: specify a single argument, the TIS-100 puzzle Lua file to be analyzed.")
 		return 1
 	end
 
-	local start,fend,capture = string.find(arg[1], "([0-9]+)")
+
+	local start,fend,capture = string.find(file, "([0-9]+)")
 	print(start,fend,capture)
 	if capture ~= nil then
  		math.randomseed(tonumber(capture))
  	end
 
-	loadpuzzle,reason = loadfile(arg[1]);
+	loadpuzzle,reason = loadfile(file);
 	if loadpuzzle == nil then
-		print("Error: Unable to parse "..arg[1]..": "..reason);
+		print("Error: Unable to parse "..file..": "..reason);
 		return 1
 	end
 
 	status,reason = pcall(loadpuzzle)
 	if not status then
-		print("Error: Unable to run "..arg[1]..": "..reason)
+		print("Error: Unable to run "..file..": "..reason)
 		return 1
 	end
 
