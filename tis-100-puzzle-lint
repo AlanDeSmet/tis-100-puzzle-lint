@@ -611,10 +611,39 @@ function main(arg)
 		return 1
 	end
 
-	name = get_name()
-	description = get_description()
-	streams = get_streams()
-	layout = get_layout()
+
+
+	local name
+	if get_name ~= nil then
+		name = get_name()
+	else
+		name = "ERROR NOT IMPLEMENTED"
+		report_error("get_name() is not implemented")
+	end
+
+	local description
+	if get_description ~= nil then
+		description = get_description()
+	else
+		description = {"ERROR NOT IMPLEMENTED"}
+		report_error("get_description() is not implemented")
+	end
+
+	local streams
+	if get_streams ~= nil then
+		streams = get_streams()
+	else
+		streams = {}
+		report_error("get_streams() is not implemented")
+	end
+
+	local layout
+	if get_layout ~= nil then
+		layout = get_layout()
+	else
+		layout = {}
+		report_error("get_layout() is not implemented")
+	end
 
 	dump_puzzle(name, description, streams, layout)
 
