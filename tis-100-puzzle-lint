@@ -81,7 +81,7 @@ end
 
 -- ############################################################################
 
--- The number at the end we can flag erroneously use of strings:
+-- The number at the end is so we can flag erroneously use of strings:
 --    {"STREAM_IMAGE", "IN",0,input}
 STREAM_INPUT = "STREAM_INPUT_1234"
 STREAM_OUTPUT = "STREAM_OUTPUT_1234"
