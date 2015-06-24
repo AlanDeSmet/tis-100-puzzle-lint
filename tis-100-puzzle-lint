@@ -598,22 +598,22 @@ function main(arg)
 	local idx = 1
 	while idx <= #arg do
 		thisarg = arg[idx]
+		print(idx, thisarg)
 		idx = idx + 1
 
 		if thisarg == "-h" or thisarg == "--help" or thisarg == "-help" then
 			usage(arg[0])
-		end
 
-		if thisarg == "-p" or thisarg == "--preview" or thisarg == "-preview" then
+		elseif thisarg == "-p" or thisarg == "--preview" or thisarg == "-preview" then
 			want_preview = true
-		end
+			print("want preview")
 
-
-		if file ~= nil then
+		elseif file ~= nil then
 			print("Unexpected argument "..thisarg..". Only one Lua puzzle file should be specified.")
 			return 1
+		else
+			file = thisarg
 		end
-		file = thisarg
 	end
 
 	if file == nil then usage(arg[0]) end
