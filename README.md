@@ -13,13 +13,17 @@ out http://www.lua.org/
 Usage
 -----
 
-./tis-100-puzzle-lint [options] INPUT.lua
+    ./tis-100-puzzle-lint [options] INPUT.lua
 
 INPUT.lua is the TIS-100 Lua puzzle to be analyzed.
 
 Options:
-  -h, --help    - Display this text and abort
-  -p, --preview - Preview what the puzzle will look like in TIS-100
+      -h, --help    - Display this text and abort
+      -p, --preview - Preview what the puzzle will look like in TIS-100
+      -f, --fancy   - NOT FINISHED
+                      Draw boxes in preview to more closely match TIS-100
+                      May not display correctly on all systems
+				  
 
 
 License
