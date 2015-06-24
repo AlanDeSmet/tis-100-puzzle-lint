@@ -211,24 +211,36 @@ function streamstring(s)
 end
 
 --------------------------------------------------------------------------------
-function dump_puzzle(name, description, streams, layout)
+function dump_puzzle(name, description, streams, layout, fancy)
 	print(string.upper("    - "..tostring(name).." -"))
 
+	if fancy then 
+		print("╔═══════════════════════════════════╗")
+	else
 	print()
-
+	end
+	local desc_lines = 0
+	local border = ""
+	if fancy then border = "║" end
 	if type(description) == "table" then
 		for i,v in ipairs(description) do
 			wrapped = word_wrap(33, v)
 			for i2,v2 in ipairs(wrapped) do
-				prefix = "       "
-				if i2 == 1 then prefix = "     > " end
+				desc_lines = desc_lines + 1
+				prefix = ""
+				if i2 == 1 then prefix = ">" end
 				v2 = string.sub(v2,0,33)
-				print(prefix..v2)
+				print(string.format("%s%-2s%-33s%s", border, prefix, v2, border))
 			end
 		end
 	else
 		print("Invalid Description")
 	end
+	while desc_lines < 6 do
+		print(string.format("%s%-2s%-33s%s", border, "", "", border))
+		desc_lines = desc_lines + 1
+	end
+	if fancy then print("╚═══════════════════════════════════╝") end
 
 	print()
 
@@ -585,6 +597,8 @@ INPUT.lua is the TIS-100 Lua puzzle to be analyzed.
 Options:
   -h, --help    - Display this text and abort
   -p, --preview - Preview what the puzzle will look like in TIS-100
+  -f, --fancy   - Draw boxes in preview to more closely match TIS-100
+                  May not display correctly on all systems
 ]])
 	os.exit(1)
 end
@@ -594,6 +608,7 @@ function main(arg)
 
 	local file
 	local want_preview = false
+	local want_fancy = false
 
 	local idx = 1
 	while idx <= #arg do
@@ -605,7 +620,9 @@ function main(arg)
 
 		elseif thisarg == "-p" or thisarg == "--preview" or thisarg == "-preview" then
 			want_preview = true
-			print("want preview")
+
+		elseif thisarg == "-f" or thisarg == "--fancy" or thisarg == "-fancy" then
+			want_fancy = true
 
 		elseif file ~= nil then
 			print("Unexpected argument "..thisarg..". Only one Lua puzzle file should be specified.")
@@ -669,8 +686,10 @@ function main(arg)
 		report_error("get_layout() is not implemented")
 	end
 
+	fancy = true
+
 	if want_preview then
-		dump_puzzle(name, description, streams, layout)
+		dump_puzzle(name, description, streams, layout, want_fancy)
 	end
 
 	validate_name(name)
