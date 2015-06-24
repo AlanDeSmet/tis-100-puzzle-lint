@@ -214,14 +214,15 @@ end
 function dump_puzzle(name, description, streams, layout, fancy)
 	print(string.upper("    - "..tostring(name).." -"))
 
+	local border = ""
+	if fancy then border = "║" end
+
 	if fancy then 
 		print("╔═══════════════════════════════════╗")
 	else
 	print()
 	end
 	local desc_lines = 0
-	local border = ""
-	if fancy then border = "║" end
 	if type(description) == "table" then
 		for i,v in ipairs(description) do
 			wrapped = word_wrap(33, v)
@@ -279,6 +280,22 @@ function dump_puzzle(name, description, streams, layout, fancy)
 			end
 		end
 		io.write("\n")
+
+		if fancy then
+			io.write("    ");
+			for i,v in ipairs(streams) do
+				if type(v) == "table" then
+					local fmt = "%6.6s "
+					if v[1] == STREAM_INPUT then io.write("╔════╗ ") end
+					if v[1] == STREAM_OUTPUT then io.write("╔════╦═╗ ") end
+					if v[1] == STREAM_IMAGE then 
+						io.write("╔════════════════════════════════╗ ")
+					end
+				end
+			end
+			io.write("\n")
+		end
+
 	end
 
 	-- TODO: Only really works with one image.
@@ -291,7 +308,11 @@ function dump_puzzle(name, description, streams, layout, fancy)
 			for k,v in ipairs(streams) do
 				if type(v) == "table" then
 					local fmt = "%6s "
-					if v[1] == STREAM_OUTPUT then fmt = "%8s " end
+					if fancy then fmt = border.."%4s"..border.." " end
+					if v[1] == STREAM_OUTPUT then
+						fmt = "%8s "
+						if fancy then fmt = border.."%4s"..border.." "..border.." " end
+					end
 					if v[1] == STREAM_IMAGE then
 						if i > 18 then
 							io.write("                              ");
@@ -318,7 +339,23 @@ function dump_puzzle(name, description, streams, layout, fancy)
 		io.write("\n")
 	end
 
-	print()
+	if fancy then
+		io.write("    ");
+		for i,v in ipairs(streams) do
+			if type(v) == "table" then
+				local fmt = "%6.6s "
+				if v[1] == STREAM_INPUT then io.write("╚════╝ ") end
+				if v[1] == STREAM_OUTPUT then io.write("╚════╩═╝ ") end
+				if v[1] == STREAM_IMAGE then 
+					io.write("╚════════════════════════════════╝ ")
+				end
+			end
+		end
+		io.write("\n")
+	else
+		print()
+	end
+
 
 	if type(layout) == "table" then
 		local fmt = "    %-8s %-8s %-8s %-8s\n"
