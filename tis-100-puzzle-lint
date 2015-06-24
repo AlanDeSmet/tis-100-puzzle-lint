@@ -564,8 +564,17 @@ function validate_layout(layout)
 	end
 end
 
-function usage()
-	print("Usage: specify a single argument, the TIS-100 puzzle Lua file to be analyzed.")
+function usage(name)
+	print(
+"Usage:\n"..
+name..[[ [options] INPUT.lua
+
+INPUT.lua is the TIS-100 Lua puzzle to be analyzed.
+
+Options:
+  -h, --help    - Display this text and abort
+  -p, --preview - Preview what the puzzle will look like in TIS-100
+]])
 	os.exit(1)
 end
 
@@ -573,6 +582,7 @@ end
 function main(arg)
 
 	local file
+	local want_preview = false
 
 	local idx = 1
 	while idx <= #arg do
@@ -580,7 +590,11 @@ function main(arg)
 		idx = idx + 1
 
 		if thisarg == "-h" or thisarg == "--help" or thisarg == "-help" then
-			usage()
+			usage(arg[0])
+		end
+
+		if thisarg == "-p" or thisarg == "--preview" or thisarg == "-preview" then
+			want_preview = true
 		end
 
 
@@ -591,11 +605,10 @@ function main(arg)
 		file = thisarg
 	end
 
-	if file == nil then usage() end
+	if file == nil then usage(arg[0]) end
 
 
 	local start,fend,capture = string.find(file, "([0-9]+)")
-	print(start,fend,capture)
 	if capture ~= nil then
  		math.randomseed(tonumber(capture))
  	end
@@ -646,16 +659,22 @@ function main(arg)
 		report_error("get_layout() is not implemented")
 	end
 
-	dump_puzzle(name, description, streams, layout)
+	if want_preview then
+		dump_puzzle(name, description, streams, layout)
+	end
 
 	validate_name(name)
 	validate_description(description)
 	validate_streams(streams)
 	validate_layout(layout)
 
-
-	print(error_count.." errors detected")
-
+	if error_count == 1 then
+		print("1 error detected")
+	elseif error_count == 0 then
+		print("No errors detected")
+	else
+		print(error_count.." errors detected")
+	end
 
 	if error_count > 0 then
 		return 2
