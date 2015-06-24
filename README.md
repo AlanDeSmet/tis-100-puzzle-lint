@@ -2,7 +2,8 @@ tis-100-puzzle-lint
 ===================
 
 tis-100-puzzle-lint analyzes puzzle programs written in Lua for TIS-100.
-It reports compilation errors, runtime errors, and invalid data.
+It reports compilation errors, runtime errors, and invalid data.  It can
+optionally display a preview of what the puzzle will look like in TIS-100.
 
 This program requires a Lua interpreter.  If you're on Linux, your 
 distribution can probably provide a suitable one.  Otherwise check
@@ -12,13 +13,13 @@ out http://www.lua.org/
 Usage
 -----
 
-> lua tis-100-puzzle-lint _12345678.lua_
+./tis-100-puzzle-lint [options] INPUT.lua
 
-_12345678.lua_ should be your TIS-100 program, written in Lua.
+INPUT.lua is the TIS-100 Lua puzzle to be analyzed.
 
-This program will return 0 if no problems were detected and non-0 if
-one or more problems were detected.
-
+Options:
+  -h, --help    - Display this text and abort
+  -p, --preview - Preview what the puzzle will look like in TIS-100
 
 
 License
