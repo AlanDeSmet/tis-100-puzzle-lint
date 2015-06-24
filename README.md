@@ -18,6 +18,7 @@ Usage
 INPUT.lua is the TIS-100 Lua puzzle to be analyzed.
 
 Options:
+
       -h, --help    - Display this text and abort
       -p, --preview - Preview what the puzzle will look like in TIS-100
       -f, --fancy   - NOT FINISHED
