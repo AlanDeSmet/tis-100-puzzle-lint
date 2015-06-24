@@ -24,6 +24,25 @@
 --
 -- ############################################################################
 
+-- The number at the end is so we can flag erroneously use of strings:
+--    {"STREAM_IMAGE", "IN",0,input}
+-- (These are before creation of the sandbox because we want them in both
+--  our environment and the child's environment.)
+STREAM_INPUT = "STREAM_INPUT_1234"
+STREAM_OUTPUT = "STREAM_OUTPUT_1234"
+STREAM_IMAGE = "STREAM_IMAGE_1234"
+TILE_COMPUTE = "TILE_COMPUTE_1234"
+TILE_MEMORY = "TILE_MEMORY_1234"
+TILE_DAMAGED = "TILE_DAMAGED_1234"
+
+-- Create a sandbox for the child to play in.  Need to be done first so none of 
+-- our definitions are accidentally exposed to the child
+local env = {}
+for k,v in pairs(_G) do
+	env[k] = v
+end
+env["env"] = nil
+
 
 -- This is based on ran3 from Numerical Methods in C, Second Edition
 -- It has been modified to roughly match the Lua math.random/math.randomseed
@@ -81,14 +100,6 @@ end
 
 -- ############################################################################
 
--- The number at the end is so we can flag erroneously use of strings:
---    {"STREAM_IMAGE", "IN",0,input}
-STREAM_INPUT = "STREAM_INPUT_1234"
-STREAM_OUTPUT = "STREAM_OUTPUT_1234"
-STREAM_IMAGE = "STREAM_IMAGE_1234"
-TILE_COMPUTE = "TILE_COMPUTE_1234"
-TILE_MEMORY = "TILE_MEMORY_1234"
-TILE_DAMAGED = "TILE_DAMAGED_1234"
 
 --------------------------------------------------------------------------------
 error_count = 0
@@ -613,7 +624,7 @@ function main(arg)
  		math.randomseed(tonumber(capture))
  	end
 
-	loadpuzzle,reason = loadfile(file);
+	loadpuzzle,reason = loadfile(file,"tb",env);
 	if loadpuzzle == nil then
 		print("Error: Unable to parse "..file..": "..reason);
 		return 1
@@ -628,32 +639,32 @@ function main(arg)
 
 
 	local name
-	if get_name ~= nil then
-		name = get_name()
+	if env.get_name ~= nil then
+		name = env.get_name()
 	else
 		name = "ERROR NOT IMPLEMENTED"
 		report_error("get_name() is not implemented")
 	end
 
 	local description
-	if get_description ~= nil then
-		description = get_description()
+	if env.get_description ~= nil then
+		description = env.get_description()
 	else
 		description = {"ERROR NOT IMPLEMENTED"}
 		report_error("get_description() is not implemented")
 	end
 
 	local streams
-	if get_streams ~= nil then
-		streams = get_streams()
+	if env.get_streams ~= nil then
+		streams = env.get_streams()
 	else
 		streams = {}
 		report_error("get_streams() is not implemented")
 	end
 
 	local layout
-	if get_layout ~= nil then
-		layout = get_layout()
+	if env.get_layout ~= nil then
+		layout = env.get_layout()
 	else
 		layout = {}
 		report_error("get_layout() is not implemented")
